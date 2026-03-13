@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>彼岸花 Goodbye 花禮 | 精緻紙紮藝術</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #a82020; /* 彼岸花紅 */
+            --primary-red-glow: rgba(168, 32, 32, 0.4);
+            --text-gold: #d4af37; /* 香檳金 */
+            --line-green: #06c755; /* LINE 綠 */
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden; /* 防止滾動 */
+            background-color: #050505;
+            font-family: 'Noto Serif TC', serif;
+            color: #e5e5e5;
+        }
+
+        /* 背景畫布 */
+        #ambient-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 內容容器 */
+        #content-wrapper {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, transparent 0%, #050505 100%);
+            transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+        }
+
+        /* 漸層疊加，增加神秘感 */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* 文字動畫 */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUpAnim 1.5s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .delay-1 { animation-delay: 0.5s; }
+        .delay-2 { animation-delay: 1.2s; }
+        .delay-3 { animation-delay: 1.9s; }
+        .delay-4 { animation-delay: 2.6s; }
+
+        @keyframes fadeUpAnim {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 標題特效 */
+        h1 {
+            background: linear-gradient(to bottom, #ff4d4d, var(--primary-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px var(--primary-red-glow);
+            letter-spacing: 0.5em;
+            margin-right: -0.5em; 
+        }
+
+        /* 按鈕設計 */
+        .enter-btn {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: #fff;
+            padding: 0.75rem 3rem;
+            letter-spacing: 0.3em;
+            text-indent: 0.15em;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            z-index: 20;
+        }
+
+        .enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-red);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .enter-btn:hover {
+            border-color: var(--primary-red);
+            letter-spacing: 0.4em;
+            box-shadow: 0 0 20px var(--primary-red-glow);
+        }
+
+        .enter-btn:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* 裝飾線 */
+        .decorative-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+            margin: 2rem auto;
+        }
+
+        /* LINE 聯繫按鈕 (使用 Font Awesome) */
+        .line-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(15, 15, 15, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+        }
+
+        .line-float:hover {
+            transform: translateY(-8px) scale(1.1);
+            border-color: var(--line-green);
+            box-shadow: 0 15px 30px rgba(6, 199, 85, 0.3);
+        }
+
+        .line-float i {
+            font-size: 32px;
+            color: #ffffff;
+            transition: color 0.3s ease;
+        }
+
+        .line-float:hover i {
+            color: var(--line-green);
+        }
+
+        /* 轉場遮罩 */
+        #transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .loading-text {
+            color: var(--text-gold);
+            letter-spacing: 0.5em;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="ambient-canvas"></canvas>
+    <div class="vignette"></div>
+
+    <!-- LINE 聯繫連結 ( Font Awesome 版本 ) -->
+    <a href="https://line.me/ti/p/your-id" target="_blank" class="line-float fade-up delay-4" title="聯繫店主">
+        <i class="fa-brands fa-line"></i>
+    </a>
+
+    <div id="content-wrapper" class="w-full max-w-4xl mx-auto px-6 text-center">
+        
+        <!-- 頂部裝飾 -->
+        <div class="fade-up delay-1 mb-8">
+            <span class="text-xs tracking-[0.4em] text-gray-500 uppercase">Premium Paper Offerings</span>
+        </div>
+
+        <!-- 標題 -->
+        <h1 class="fade-up delay-1 text-5xl md:text-7xl font-light mb-4">彼岸花</h1>
+        <h2 class="fade-up delay-2 text-xl md:text-2xl font-light tracking-widest text-gray-300 mb-8">
+            Goodbye 花禮
+        </h2>
+
+        <div class="fade-up delay-3 decorative-line"></div>
+
+        <!-- 引言 -->
+        <div class="fade-up delay-3 mb-12 space-y-4 text-sm md:text-base tracking-[0.2em] text-gray-400 font-light leading-loose">
+            <p>化作春泥更護花，紙化輕煙寄思量。</p>
+            <p>我們以最精緻的紙藝，為您傳遞對故人最深沉的告別與祝福。</p>
+        </div>
+
+        <!-- 進入按鈕 -->
+        <div class="fade-up delay-4">
+            <button class="enter-btn text-sm uppercase" onclick="enterStore()">
+                進入商店
+            </button>
+        </div>
+    </div>
+
+    <!-- 過場遮罩 -->
+    <div id="transition-overlay">
+        <div class="loading-text" id="loading-text">引路中 ...</div>
+    </div>
+
+    <script>
+        // --- 設定目標網址 ---
+        const targetUrl = "https://your-store-link.com"; 
+
+        // --- Canvas 星火/花瓣 粒子特效 ---
+        const canvas = document.getElementById('ambient-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * height; 
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + Math.random() * 100;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = -(Math.random() * 0.5 + 0.2);
+                this.life = 0;
+                this.maxLife = Math.random() * 300 + 200;
+                
+                const colors = [
+                    'rgba(168, 32, 32, OPACITY)',
+                    'rgba(255, 77, 77, OPACITY)',
+                    'rgba(212, 175, 55, OPACITY)'
+                ];
+                this.colorTemplate = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.x += Math.sin(this.life * 0.02) * 0.3;
+                this.life++;
+                if (this.life >= this.maxLife || this.y < -10) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                let opacity = 0;
+                const fadeInPhase = 50;
+                const fadeOutPhase = 50;
+                if (this.life < fadeInPhase) {
+                    opacity = this.life / fadeInPhase;
+                } else if (this.maxLife - this.life < fadeOutPhase) {
+                    opacity = (this.maxLife - this.life) / fadeOutPhase;
+                } else {
+                    opacity = 1;
+                }
+                opacity *= 0.6;
+                const color = this.colorTemplate.replace('OPACITY', opacity);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        const particleCount = window.innerWidth > 768 ? 150 : 70;
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // --- 進入商店跳轉邏輯 ---
+        function enterStore() {
+            const overlay = document.getElementById('transition-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const content = document.getElementById('content-wrapper');
+
+            content.style.opacity = '0';
+            content.style.transform = 'scale(1.05)';
+
+            overlay.style.pointerEvents = 'auto';
+            overlay.style.opacity = '1';
+
+            setTimeout(() => {
+                loadingText.style.opacity = '1';
+            }, 500);
+
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 1800); 
+        }
+    </script>
+</body>
+</html>
